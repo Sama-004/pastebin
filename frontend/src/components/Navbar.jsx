@@ -1,4 +1,4 @@
-function Nav() {
+export default function Nav() {
   return (
     <>
       <nav className="bg-nav-color border-gray-200 dark:bg-nav-color">
@@ -48,5 +48,3 @@ function Nav() {
     </>
   );
 }
-
-export default Nav;

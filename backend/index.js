@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express")
 const mongoose = require("mongoose")
+const cors = require("cors")
 const app = express()
 
 const Document = require("./models/model")
@@ -8,30 +9,38 @@ const mongoDB = process.env.MONGODB_URL;
 mongoose.connect(mongoDB);
 const db = mongoose.connection;
 main().catch((err) => console.log(err));
+
 async function main() {
-    await mongoose.connect(mongoDB);
+    try {
+        await mongoose.connect(mongoDB);
+        console.log("Connected to MongoDB");
+    } catch (error) {
+        console.error("Error connecting to MongoDB:", error);
+    }
 }
 
+main();
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
-
-app.get("/", (req, res) => {
-    res.json("test works")
-})
-
+app.use(cors());
 
 app.post("/save", async (req, res) => {
-    const value = req.body.value
+    const { pasteValue } = req.body
+    const data = {
+        pasteValue: pasteValue
+    }
+    const newPaste = new Document({
+        pasteValue: pasteValue
+    });
     try {
-        const document = await Document.create({ value })
-        res.redirect(`/${document.id}`)
+        await newPaste.save();
+        console.log("paste saved successfully")
     }
-    catch (e) {
-        console.error("Error saving document:", e);
-        res.json({ msg: "error saving" })
+    catch (error) {
+        console.log("error saving the paste", error)
     }
-    console.log(value)
-})
+});
 
 app.get("/:id", async (req, res) => {
     const id = req.params.id

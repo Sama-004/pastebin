@@ -1,12 +1,15 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const nodemon = require("nodemon");
 
 
 const pasteSchema = new mongoose.Schema({
-    value: {
+    pasteValue: {
         type: String,
         required: true
-    }
+    },
 })
 
 
-module.exports = mongoose.model("document", pasteSchema)
+// module.exports = mongoose.model("document", pasteSchema)
+const Document = mongoose.model("Document", pasteSchema);
+module.exports = Document;
