@@ -35,10 +35,13 @@ app.post("/save", async (req, res) => {
     });
     try {
         await newPaste.save();
+        res.json({ _id: newPaste._id });
         console.log("paste saved successfully")
+        // res.redirect(newPaste.id)
     }
     catch (error) {
         console.log("error saving the paste", error)
+        res.status(500).send("Error saving the text")
     }
 });
 
@@ -49,7 +52,8 @@ app.get("/:id", async (req, res) => {
         if (!document) {
             return res.status(404).json({ error: " Document not found" })
         }
-        res.json(document)
+        // res.json(document)
+        res.json({ text: document.pasteValue })
     }
     catch (e) {
         res.status(500).json({ error: "Server error" })
