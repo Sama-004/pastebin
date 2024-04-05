@@ -1,9 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Pastebin() {
   const [pasteValue, setPasteValue] = useState("");
   const [expiryTime, setExpiryTime] = useState("never");
+  const navigate = useNavigate();
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -15,7 +17,8 @@ export default function Pastebin() {
       });
       const savedPasteId = response.data._id;
       console.log(savedPasteId);
-      // setId(savedPasteId);
+      // history.push(`/documents/${savedPasteId}`);
+      navigate(`/${savedPasteId}`);
     } catch (error) {
       console.log("Error saving the document", error);
     }
