@@ -10,7 +10,7 @@ export default function Message() {
       try {
         const response = await axios.get(`http://localhost:3000/${id}`);
         if (!response.data) {
-          throw new Error("failed to fetch"); // add a component for this part to show error
+          throw new Error("failed to fetch");
         }
         setData(response.data);
       } catch (error) {
@@ -20,14 +20,25 @@ export default function Message() {
     fetchData();
   }, [id]);
   return (
-    <div>
-      {data ? (
-        <div>
-          <p>Text: {data.text}</p>
-        </div>
-      ) : (
-        <p>Loading...</p>
-      )}
+    <div className="bg-nav-color v-screen flex justify-center items-center">
+      <div className="container mx-auto px-2 lg:w-3/4">
+        {data ? (
+          <div className="border border-gray-900 rounded-lg p-2 mb-6 bg-gray-700">
+            <pre className="whitespace-pre-wrap text-black border rounded border-blue-900 bg-white">
+              {data.text}
+            </pre>
+          </div>
+        ) : (
+          <div>
+            <h1 className="text-3xl font-bold text-center text-gradient">
+              Snippet has expired
+            </h1>
+            <p className="text-center">
+              This snippet has expired and is no longer available.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
