@@ -5,6 +5,7 @@ import { IoIosCheckmarkCircle } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { FaClock } from "react-icons/fa";
 import { CiSaveUp2 } from "react-icons/ci";
+import { MdOutlineArrowOutward } from "react-icons/md";
 
 import {
   Select,
@@ -16,7 +17,7 @@ import {
 
 export default function Pastebin() {
   const [pasteValue, setPasteValue] = useState("");
-  // const [expiryTime, setExpiryTime] = useState("never");
+  const [expiryTime, setExpiryTime] = useState("never");
   const [showModal, setShowModal] = useState(false);
   const [savedPasteId, setSavedPasteId] = useState("");
   const [copyButtonText, setCopyButtonText] = useState("Copy Link");
@@ -25,15 +26,17 @@ export default function Pastebin() {
   const handleSave = async (e) => {
     e.preventDefault();
     console.log("Paste value:", pasteValue);
+    console.log("Expiry time: ", expiryTime);
     try {
-      console.log("submitted");
       const response = await axios.post("http://localhost:3000/save", {
         pasteValue,
+        expiryTime,
       });
       const id = response.data._id;
       console.log(id);
       setSavedPasteId(id);
       setShowModal(true);
+      console.log("submitted");
     } catch (error) {
       console.log("Error saving the document", error);
     }
@@ -42,6 +45,10 @@ export default function Pastebin() {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(`http://localhost:5173/${savedPasteId}`);
     setCopyButtonText(<IoIosCheckmarkCircle />);
+  };
+
+  const handleExpiryChange = (value) => {
+    setExpiryTime(value);
   };
 
   const goToPaste = () => {
@@ -77,15 +84,16 @@ export default function Pastebin() {
       </div>
       <div className="ml-40 flex justify-between items-center">
         <div className="flex items-center">
-          <Select>
+          <Select onValueChange={handleExpiryChange}>
             <SelectTrigger className="w-[180px]">
               <FaClock className="inline-block text-xl" />
               <SelectValue placeholder="Expires in" />
             </SelectTrigger>
             <SelectContent className="bg-nav-color text-white">
-              <SelectItem value="light">Never</SelectItem>
-              <SelectItem value="dark">10 minutes</SelectItem>
-              <SelectItem value="system">2 days</SelectItem>
+              <SelectItem value="never">Never</SelectItem>
+              <SelectItem value="10seconds">10 Seconds</SelectItem>
+              <SelectItem value="10minutes">10 minutes</SelectItem>
+              <SelectItem value="2days">2 days</SelectItem>
             </SelectContent>
           </Select>
           <button
@@ -126,6 +134,7 @@ export default function Pastebin() {
               <button
                 onClick={goToPaste}
                 className="px-4 py-2 bg-blue-500 text-white rounded-md">
+                <MdOutlineArrowOutward className="inline-block mr-1 text-xl" />
                 Go to Paste
               </button>
             </div>
