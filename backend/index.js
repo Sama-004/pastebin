@@ -19,19 +19,19 @@ async function main() {
     }
 }
 
-main();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(cors());
 
 app.post("/save", async (req, res) => {
-    const { pasteValue } = req.body
-    const data = {
-        pasteValue: pasteValue
-    }
+    const { pasteValue, expiryTime } = req.body
+    // const data = {
+    //     pasteValue: pasteValue
+    // }
     const newPaste = new Document({
-        pasteValue: pasteValue
+        pasteValue: pasteValue,
+        expiryTime: calculateExpiryTime(expiryTime)
     });
     try {
         await newPaste.save();
@@ -44,12 +44,27 @@ app.post("/save", async (req, res) => {
     }
 });
 
+function calculateExpiryTime(expiryOption) {
+    if (expiryOption === "never") {
+        return null;
+    } else if (expiryOption === "10minutes") {
+        return new Date(Date.now() + 10 * 60 * 1000);
+    } else if (expiryOption === "2days") {
+        return new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
+    } else if (expiryOption === "10seconds") {
+        return new Date(Date.now() + 10 * 1000)
+    }
+}
+
 app.get("/:id", async (req, res) => {
     const id = req.params.id
     try {
         const document = await Document.findById(id)
         if (!document) {
             return res.status(404).json({ error: " Document not found" })
+        }
+        if (document.expiryTime && document.expiryTime < new Date()) {
+            return res.status(403).json({ error: "Paste has expired" });
         }
         res.json({ text: document.pasteValue })
     }

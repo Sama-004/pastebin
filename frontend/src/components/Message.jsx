@@ -11,6 +11,23 @@ export default function Message() {
         const response = await axios.get(`http://localhost:3000/${id}`);
         if (!response.data) {
           throw new Error("failed to fetch");
+        } else if (response.data.error) {
+          return (
+            <>
+              <div className="bg-nav-color v-screen flex justify-center items-center">
+                <div className="container mx-auto px-2 lg:w-3/4">
+                  <div>
+                    <h1 className="text-3xl font-bold text-center text-gradient">
+                      Snippet has expired
+                    </h1>
+                    <p className="text-center">
+                      This snippet has expired and is no longer available.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </>
+          );
         }
         setData(response.data);
       } catch (error) {

@@ -7,6 +7,9 @@ const pasteSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    expiryTime: {
+        type: Date,
+    }
 })
 
 
