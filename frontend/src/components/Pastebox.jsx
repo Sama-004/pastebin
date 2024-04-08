@@ -1,10 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
-import { FaClipboard } from "react-icons/fa";
-import { IoIosCheckmarkCircle } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-import { FaClock } from "react-icons/fa";
+
+import { FaClipboard, FaClock } from "react-icons/fa";
 import { CiSaveUp2 } from "react-icons/ci";
+import { IoIosCheckmarkCircle } from "react-icons/io";
 import { MdOutlineArrowOutward } from "react-icons/md";
 
 import {
@@ -21,6 +21,7 @@ export default function Pastebin() {
   const [showModal, setShowModal] = useState(false);
   const [savedPasteId, setSavedPasteId] = useState("");
   const [copyButtonText, setCopyButtonText] = useState("Copy Link");
+  const [title, setTitle] = useState("");
   const navigate = useNavigate();
 
   const handleSave = async (e) => {
@@ -31,6 +32,7 @@ export default function Pastebin() {
       const response = await axios.post("http://localhost:3000/save", {
         pasteValue,
         expiryTime,
+        title,
       });
       const id = response.data._id;
       console.log(id);
@@ -56,21 +58,35 @@ export default function Pastebin() {
   };
 
   return (
-    <div className="flex flex-col justify-center h-full bg-nav-color">
-      <div className="ml-40 mt-4">
+    <div className="flex flex-col justify-center h-full bg-nav-color p-10 text-xl">
+      <div className="max-w-2x1 mx-auto flex flex-col">
         <label
           htmlFor="message"
-          className="block mb-2 text-sm font-large text-gray-900 dark:text-white">
+          className="block mb-2 text-lg text-white font-bold">
           New Paste
         </label>
         <textarea
-          label="New paste"
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="p-2.5 mb-2 text-lg text-white bg-nav-color border border-gray-300 rounded-md shadow-inner font-mono focus:ring-blue-500 focus:border-blue-500 dark:bg-nav-color dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500"
+          placeholder="Enter title here"
+          style={{
+            width: "600px",
+            lineHeight: "21px",
+            overflowWrap: "break-word",
+            MozTabSize: "4",
+            OTabSize: "4",
+            WebkitTabSize: "4",
+          }}
+        />
+        <textarea
           id="message"
           value={pasteValue}
           onChange={(e) => setPasteValue(e.target.value)}
           rows="4"
           className="p-2.5 text-sm text-white bg-nav-color border border-gray-300 rounded-md shadow-inner font-mono focus:ring-blue-500 focus:border-blue-500 dark:bg-nav-color dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder=""
+          placeholder="Enter your text here"
           style={{
             width: "600px",
             lineHeight: "21px",
@@ -82,7 +98,7 @@ export default function Pastebin() {
             WebkitTabSize: "4",
           }}></textarea>
       </div>
-      <div className="ml-40 flex justify-between items-center">
+      <div className="flex justify-between items-center max-w-2x1 mx-auto mt-4 text-xl">
         <div className="flex items-center">
           <Select onValueChange={handleExpiryChange}>
             <SelectTrigger className="w-[180px]">

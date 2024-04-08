@@ -25,13 +25,14 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cors());
 
 app.post("/save", async (req, res) => {
-    const { pasteValue, expiryTime } = req.body
-    // const data = {
-    //     pasteValue: pasteValue
-    // }
+    const { title, pasteValue, expiryTime } = req.body
+    // const uploadTime = Date.now()
+    const uploadTime = new Date();
     const newPaste = new Document({
+        title: title,
         pasteValue: pasteValue,
-        expiryTime: calculateExpiryTime(expiryTime)
+        expiryTime: calculateExpiryTime(expiryTime),
+        uploadTime: uploadTime
     });
     try {
         await newPaste.save();
@@ -66,7 +67,7 @@ app.get("/:id", async (req, res) => {
         if (document.expiryTime && document.expiryTime < new Date()) {
             return res.status(403).json({ error: "Paste has expired" });
         }
-        res.json({ text: document.pasteValue })
+        res.json({ text: document.pasteValue, uploadTime: document.uploadTime })
     }
     catch (e) {
         res.status(500).json({ error: "Server error" })
