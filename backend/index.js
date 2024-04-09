@@ -67,7 +67,7 @@ app.get("/:id", async (req, res) => {
         if (document.expiryTime && document.expiryTime < new Date()) {
             return res.status(403).json({ error: "Paste has expired" });
         }
-        res.json({ text: document.pasteValue, uploadTime: document.uploadTime })
+        res.json({ text: document.pasteValue, uploadTime: document.uploadTime, title: document.title, expiryTime: document.expiryTime })
     }
     catch (e) {
         res.status(500).json({ error: "Server error" })

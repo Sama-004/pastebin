@@ -20,11 +20,28 @@ function calculateUploadTime(uploadTimestamp) {
   } ago`;
 }
 
+function calculateExpiryTime(expiryTimestamp) {
+  const expiryDate = new Date(expiryTimestamp);
+  const currentDate = new Date();
+
+  const differenceInMilliseconds = expiryDate - currentDate;
+  const differenceInMinutes = Math.floor(differenceInMilliseconds / 1000 / 60);
+
+  if (differenceInMinutes < 0) {
+    return "Expires in: Never";
+  } else {
+    return `Expires in ${differenceInMinutes} minute${
+      differenceInMinutes > 1 ? "s" : ""
+    }`;
+  }
+}
+
 export default function Message() {
   const { id } = useParams();
   const [data, setData] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [uploadTime, setUploadTime] = useState(null);
+  const [expiryTime, setExpiryTime] = useState(null);
   const textRef = useRef();
 
   const copyToClipboard = () => {
@@ -43,6 +60,7 @@ export default function Message() {
         } else {
           setData(response.data);
           setUploadTime(calculateUploadTime(response.data.uploadTime));
+          setExpiryTime(calculateExpiryTime(response.data.expiryTime));
         }
       } catch (error) {
         console.log("Error fetching the data", error);
@@ -67,8 +85,11 @@ export default function Message() {
             <>
               <div className="bg-gray-700 border border-gray-900 rounded-lg p-6 overflow-auto max-h-96">
                 <div>
-                  <h2 className="text-lg text-white font-bold mb-1">Title</h2>
+                  <h2 className="text-lg text-white font-bold mb-1">
+                    {data.title}
+                  </h2>
                   <p className="text-sm text-gray-400">{uploadTime}</p>
+                  <p className="text-sm text-gray-400">{expiryTime}</p>
                 </div>
 
                 <pre
