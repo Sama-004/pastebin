@@ -5,7 +5,6 @@ import { FaExclamation, FaClipboard } from "react-icons/fa6";
 
 function calculateUploadTime(uploadTimestamp) {
   const uploadDate = new Date(uploadTimestamp);
-  // const uploadDate = uploadTimestamp;
   console.log("Upload Time: ", uploadTimestamp);
   const currentDate = new Date();
   console.log("Current Time: ", currentDate);
@@ -42,6 +41,7 @@ export default function Message() {
   const [showPopup, setShowPopup] = useState(false);
   const [uploadTime, setUploadTime] = useState(null);
   const [expiryTime, setExpiryTime] = useState(null);
+  const [error, setError] = useState(null);
   const textRef = useRef();
 
   const copyToClipboard = () => {
@@ -56,7 +56,8 @@ export default function Message() {
         if (!response.data) {
           throw new Error("Failed to fetch");
         } else if (response.data.error) {
-          setData({ error: true });
+          // setData({ error: true });
+          setError(response.data.error);
         } else {
           setData(response.data);
           setUploadTime(calculateUploadTime(response.data.uploadTime));
@@ -64,6 +65,7 @@ export default function Message() {
         }
       } catch (error) {
         console.log("Error fetching the data", error);
+        setError("Failed to fetch data");
       }
     };
     fetchData();
@@ -71,18 +73,18 @@ export default function Message() {
   return (
     <div className="bg-nav-color h-screen flex justify-center items-center">
       <div className="container mx-auto px-4 lg:w-3/4">
-        {data ? (
-          data.error ? (
-            <div className="text-center">
-              <h1 className="text-3xl font-bold text-white mb-4">
-                Snippet has expired
-              </h1>
-              <p className="text-white">
-                This snippet has expired and is no longer available.
-              </p>
-            </div>
-          ) : (
-            <>
+        {error ? (
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-white mb-4">
+              Snippet has expired
+            </h1>
+            <p className="text-white">
+              This snippet has expired and is no longer available.
+            </p>
+          </div>
+        ) : (
+          data && (
+            <div>
               <div className="bg-gray-700 border border-gray-900 rounded-lg p-6 overflow-auto max-h-96">
                 <div>
                   <h2 className="text-lg text-white font-bold mb-1">
@@ -91,7 +93,6 @@ export default function Message() {
                   <p className="text-sm text-gray-400">{uploadTime}</p>
                   <p className="text-sm text-gray-400">{expiryTime}</p>
                 </div>
-
                 <pre
                   ref={textRef}
                   className="whitespace-pre-wrap text-white p-4">
@@ -99,7 +100,6 @@ export default function Message() {
                 </pre>
               </div>
               <div className="flex justify-between items-center mt-4">
-                {/* <p className="text-white">{uploadTime}</p> */}
                 <button
                   onClick={copyToClipboard}
                   className="mt-4 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
@@ -113,12 +113,8 @@ export default function Message() {
                   Text copied to clipboard
                 </div>
               )}
-            </>
+            </div>
           )
-        ) : (
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-white mb-4">Loading...</h1>
-          </div>
         )}
       </div>
     </div>
