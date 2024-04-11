@@ -51,7 +51,7 @@ export default function Message() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/${id}`);
+        const response = await axios.get(`https://pastebin-server.vercel.app/${id}`);
         if (!response.data) {
           throw new Error("Failed to fetch");
         } else if (response.data.error) {

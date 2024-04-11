@@ -31,7 +31,7 @@ export default function Pastebin() {
     // console.log("Paste value:", pasteValue);
     // console.log("Expiry time: ", expiryTime);
     try {
-      const response = await axios.post("http://localhost:3000/save", {
+      const response = await axios.post("https://pastebin-server.vercel.app/save", {
         pasteValue,
         expiryTime,
         title,
@@ -52,7 +52,7 @@ export default function Pastebin() {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(`http://localhost:5173/${savedPasteId}`);
+    navigator.clipboard.writeText(`https://pastebin-server.vercel.app/${savedPasteId}`);
     setCopyButtonText(<IoIosCheckmarkCircle />);
   };
 
