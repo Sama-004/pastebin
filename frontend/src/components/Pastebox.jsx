@@ -52,7 +52,7 @@ export default function Pastebin() {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(`https://pastebin-server.vercel.app/${savedPasteId}`);
+    navigator.clipboard.writeText(`https://pastebin-self.vercel.app/message/${savedPasteId}`);
     setCopyButtonText(<IoIosCheckmarkCircle />);
   };
 
