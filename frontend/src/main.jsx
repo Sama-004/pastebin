@@ -5,15 +5,21 @@ import Error from "./components/Error.jsx";
 import Message from "./components/Message.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
+import Landing from "./components/Landing.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <Landing />,
+    errorElement: <Error />,
+  },
+  {
+    path: "/new",
     element: <App />,
     errorElement: <Error />,
   },
   {
-    path: "/:id",
+    path: "/message/:id",
     element: <Message />,
   },
 ]);

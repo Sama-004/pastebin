@@ -15,6 +15,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import Error from "@/components/Error";
+
 export default function Pastebin() {
   const [pasteValue, setPasteValue] = useState("");
   const [expiryTime, setExpiryTime] = useState("never");
@@ -26,8 +28,8 @@ export default function Pastebin() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    console.log("Paste value:", pasteValue);
-    console.log("Expiry time: ", expiryTime);
+    // console.log("Paste value:", pasteValue);
+    // console.log("Expiry time: ", expiryTime);
     try {
       const response = await axios.post("http://localhost:3000/save", {
         pasteValue,
@@ -35,12 +37,17 @@ export default function Pastebin() {
         title,
       });
       const id = response.data._id;
-      console.log(id);
+      // console.log(id);
       setSavedPasteId(id);
       setShowModal(true);
-      console.log("submitted");
+      // console.log("submitted");
     } catch (error) {
-      console.log("Error saving the document", error);
+      // console.log("Error saving the document", error);
+      return (
+        <>
+          <Error />;
+        </>
+      );
     }
   };
 
@@ -54,7 +61,7 @@ export default function Pastebin() {
   };
 
   const goToPaste = () => {
-    navigate(`/${savedPasteId}`);
+    navigate(`/message/${savedPasteId}`);
   };
 
   return (
@@ -69,10 +76,9 @@ export default function Pastebin() {
           id="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="p-2.5 mb-2 text-lg text-white bg-nav-color border border-gray-300 rounded-md shadow-inner font-mono focus:ring-blue-500 focus:border-blue-500 dark:bg-nav-color dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500"
+          className="p-2.5 mb-2 text-lg text-white bg-nav-color rounded-md shadow-inner font-mono outline-none focus:border-none focus:ring-2 focus:ring-blue-700 border w-full sm:w-96"
           placeholder="Enter title here"
           style={{
-            width: "600px",
             lineHeight: "21px",
             overflowWrap: "break-word",
             MozTabSize: "4",
@@ -85,10 +91,9 @@ export default function Pastebin() {
           value={pasteValue}
           onChange={(e) => setPasteValue(e.target.value)}
           rows="4"
-          className="p-2.5 text-sm text-white bg-nav-color border border-gray-300 rounded-md shadow-inner font-mono focus:ring-blue-500 focus:border-blue-500 dark:bg-nav-color dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          className="p-2.5 text-lg outline-none text-white bg-nav-color border focus:border-none focus:ring-2 focus:ring-blue-700 rounded-md shadow-inner font-mono w-full sm:w-96"
           placeholder="Enter your text here"
           style={{
-            width: "600px",
             lineHeight: "21px",
             overflowWrap: "break-word",
             height: "300px",
@@ -99,24 +104,26 @@ export default function Pastebin() {
           }}></textarea>
       </div>
       <div className="flex justify-between items-center max-w-2x1 mx-auto mt-4 text-xl">
-        <div className="flex items-center">
+        <div className="flex items-center justify-between space-x-4">
           <Select onValueChange={handleExpiryChange}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[180px] bg-nav-color text-white">
               <FaClock className="inline-block text-xl" />
               <SelectValue placeholder="Expires in" />
             </SelectTrigger>
             <SelectContent className="bg-nav-color text-white">
               <SelectItem value="never">Never</SelectItem>
-              <SelectItem value="10seconds">10 Seconds</SelectItem>
+              <SelectItem value="1minute">1 minute</SelectItem>
               <SelectItem value="10minutes">10 minutes</SelectItem>
+              <SelectItem value="1day">1 day</SelectItem>
               <SelectItem value="2days">2 days</SelectItem>
+              <SelectItem value="1week">1 week</SelectItem>
             </SelectContent>
           </Select>
           <button
             onClick={handleSave}
-            className="p-[0px] ml-60 w-40 relative rounded-[2px] bold">
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
-            <div className="px-4 py-2 bg-cyan-500 rounded-[2px] relative group transition duration-200 text-white hover:bg-transparent">
+            className="p-[0px] w-full sm:w-40 relative rounded-[2px] bold">
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg w-full sm:w-40" />
+            <div className="px-4 py-2 bg-cyan-500 rounded-[2px] relative group transition duration-200 text-white hover:bg-transparent w-full sm:w-40">
               <CiSaveUp2 className="inline-block mr-3 text-xl" />
               Save
             </div>
@@ -131,10 +138,14 @@ export default function Pastebin() {
               <button
                 onClick={copyToClipboard}
                 className={`px-4 py-2 rounded-md mr-4 ${
+                  window.innerWidth <= 768 ? "w-full" : ""
+                }
+                ${
                   copyButtonText === "Copy Link"
                     ? "bg-blue-500 text-white"
                     : "bg-green-500 text-white"
-                }`}>
+                }
+                `}>
                 {copyButtonText === "Copy Link" ? (
                   <>
                     <FaClipboard className="inline-block mr-1" />

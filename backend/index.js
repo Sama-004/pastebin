@@ -48,12 +48,20 @@ app.post("/save", async (req, res) => {
 function calculateExpiryTime(expiryOption) {
     if (expiryOption === "never") {
         return null;
-    } else if (expiryOption === "10minutes") {
+    } else if (expiryOption === "1minute") {
+        return new Date(Date.now() + 60 * 1000);
+    }
+    else if (expiryOption === "10minutes") {
         return new Date(Date.now() + 10 * 60 * 1000);
-    } else if (expiryOption === "2days") {
+    }
+    else if (expiryOption === "1day") {
+        return new Date(Date.now() + 24 * 60 * 60 * 1000);
+    }
+    else if (expiryOption === "2days") {
         return new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
-    } else if (expiryOption === "10seconds") {
-        return new Date(Date.now() + 10 * 1000)
+    }
+    else if (expiryOption === "1week") {
+        return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     }
 }
 
